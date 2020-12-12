@@ -4,6 +4,7 @@ import { Layout, Typography, Row, Col, Input, Form, Button, notification } from 
 import axios from '../../config/axios';
 import LocalStorageService from '../../services/localStorageService';
 import jwtDecode from 'jwt-decode';
+import { withRouter } from 'react-router-dom';
 
 const { Footer } = Layout;
 const { Title } = Typography;
@@ -29,9 +30,15 @@ const Login = (props) => {
 
     axios.post('/users/login', body)
     .then(result => {
+      notification.success({
+        message: `การเข้าสู่ระบบเสร็จสิ้น`
+      })
       LocalStorageService.setToken(result.data.token);
-      console.log(jwtDecode(result.data.token).status);
-      // props.setRole("user");
+      const role = jwtDecode(result.data.token).status;
+      if (role === "member") {
+        props.setRole("member");
+        props.history.push("/board");
+      }
     })
     .catch(err => {
       notification.error({
@@ -50,7 +57,7 @@ const Login = (props) => {
 
   return (
     <Layout className="layout flex flex-col h-screen">
-      <Navbar />
+      <Navbar setRole={props.setRole} />
       <div className="flex-grow px-12 bg-white pt-10">
         <Row align="center">
           <Col span={18}>
@@ -102,4 +109,4 @@ const Login = (props) => {
   )
 }
 
-export default Login;
+export default withRouter(Login);
