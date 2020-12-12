@@ -1,3 +1,5 @@
+import jwtDecode from 'jwt-decode';
+
 function setToken(token) {
   localStorage.setItem("ACCESS_TOKEN", token);
 }
@@ -12,7 +14,7 @@ function removeToken() {
 
 function getRole() {
   if(getToken()) {
-      return "user";
+      return jwtDecode(getToken()).status;
   }
   return "guest";
 }

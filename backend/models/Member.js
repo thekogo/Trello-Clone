@@ -7,12 +7,15 @@ module.exports = (sequelize, DataTypes) => {
       password: {
           type: DataTypes.STRING(255)
       },
-      firstname: {
+      firstName: {
           type: DataTypes.STRING(100)
       },
-      lastname: {
+      lastName: {
           type: DataTypes.STRING(100)
       },
+      status: {
+          type: DataTypes.STRING(100)
+      }
   }, {
     tableName: 'members',
   });

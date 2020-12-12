@@ -1,6 +1,8 @@
 import React from 'react';
 import Navbar from '../common/Navbar';
-import { Layout, Typography, Row, Col, Input, Form, Button } from 'antd'
+import { Layout, Typography, Row, Col, Input, Form, Button, notification } from 'antd'
+import axios from '../../config/axios';
+import { withRouter } from 'react-router-dom';
 
 const { Footer } = Layout;
 const { Title } = Typography;
@@ -19,7 +21,27 @@ const Register = (props) => {
   const [form] = Form.useForm();
 
   const onFinish = values => {
-    console.log(values);
+    console.log('Received values of form: ', values);
+    const body = {
+      email: values.email,
+      password: values.password,
+      firstName: values.firstName,
+      lastName: values.lastName,
+    }
+    axios.post('/users/register', body)
+      .then(res => {
+        notification.success({
+          message: `คุณ ${values.firstName} ${values.lastName} ได้สมัครสมาชิกเรียบร้อยแล้ว`
+        })
+        props.history.push("/login");
+      })
+      .catch(err => {
+        console.log(err.response.data.message)
+        notification.error({
+          message: `การสมัครสมาชิกล้มเหลว
+          ${err.response.data.message}`
+        })
+      })
   };
 
   const onReset = () => {
@@ -67,7 +89,7 @@ const Register = (props) => {
 
                 <Form.Item
                   label="Firstname"
-                  name="firstname"
+                  name="firstName"
                   rules={[{ required: true, message: 'Please input your Firstname!' }]}
                 >
                   <Input />
@@ -75,7 +97,7 @@ const Register = (props) => {
 
                 <Form.Item
                   label="Lastname"
-                  name="lastname"
+                  name="lastName"
                   rules={[{ required: true, message: 'Please input your Lastname!' }]}
                 >
                   <Input />
@@ -100,4 +122,4 @@ const Register = (props) => {
   )
 }
 
-export default Register;
+export default withRouter(Register);

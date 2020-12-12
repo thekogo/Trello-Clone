@@ -1,6 +1,9 @@
 import React from 'react';
 import Navbar from '../common/Navbar';
-import { Layout, Typography, Row, Col, Input, Form, Button } from 'antd'
+import { Layout, Typography, Row, Col, Input, Form, Button, notification } from 'antd'
+import axios from '../../config/axios';
+import LocalStorageService from '../../services/localStorageService';
+import jwtDecode from 'jwt-decode';
 
 const { Footer } = Layout;
 const { Title } = Typography;
@@ -19,7 +22,22 @@ const Login = (props) => {
   const [form] = Form.useForm();
 
   const onFinish = values => {
-    console.log(values);
+    const body = {
+      email: values.email,
+      password: values.password
+    }
+
+    axios.post('/users/login', body)
+    .then(result => {
+      LocalStorageService.setToken(result.data.token);
+      console.log(jwtDecode(result.data.token).status);
+      // props.setRole("user");
+    })
+    .catch(err => {
+      notification.error({
+        message: `การเข้าสู่ระบบล้มเหลว`
+      })
+    })
   };
 
   const onReset = () => {

@@ -1,5 +1,6 @@
 import RegisterPage from '../components/pages/Register';
 import LoginPage from '../components/pages/Login';
+import BoardPage from '../components/pages/Board';
 
 const components = {
   register: {
@@ -9,6 +10,10 @@ const components = {
   login: {
     url: '/login',
     component: LoginPage
+  },
+  board: {
+    url: '/board',
+    component: BoardPage
   }
 }
 
@@ -20,6 +25,12 @@ const config = {
     ],
     redirectRoute: '/login'
   },
+  member: {
+    allowedRoutes: [
+      components.board,
+    ],
+    redirectRoute: '/board'
+  }
 }
 
 export default config;

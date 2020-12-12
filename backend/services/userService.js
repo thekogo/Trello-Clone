@@ -9,6 +9,7 @@ module.exports = function (db) {
         lastName,
         email,
         password,
+        status: "member"
       });
       return user;
     },
