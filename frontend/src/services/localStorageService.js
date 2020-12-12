@@ -19,9 +19,21 @@ function getRole() {
   return "guest";
 }
 
+function getUser() {
+  const jwt = jwtDecode(getToken());
+  const user = {
+    email: jwt.email,
+    firstName: jwt.firstName,
+    lastName: jwt.lastName,
+    role: jwt.status
+  }
+  return user;
+}
+
 export default {
   setToken,
   getToken,
   removeToken,
   getRole,
+  getUser,
 }

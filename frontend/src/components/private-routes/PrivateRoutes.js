@@ -17,7 +17,7 @@ export default function PrivateRoutes(props) {
             key={route.url}
             exact
           >
-            <route.component setRole={props.setRole} />
+            <route.component setRole={props.setRole} role={props.role} />
           </Route>
         ))}
         <Redirect to={redirectRoute} />
