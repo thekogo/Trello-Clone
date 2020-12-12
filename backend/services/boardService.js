@@ -1,12 +1,12 @@
 module.exports = function (db) {
   return {
-    async userCreate(firstName, lastName, email, password, age) {
-      if (!(firstName && lastName && email && password)) {
+    async boardCreate(userId, name) {
+      if (!(userId && name)) {
         return false;
       }
-      const user = await db.Member.create({
-        firstName,
-        lastName,
+      const user = await db.Board.create({
+        userId,
+        name,
         email,
         password,
         status: "member"
@@ -20,6 +20,6 @@ module.exports = function (db) {
       const targetUser = await db.Member.findOne({ where: { email } });
       console.log(targetUser);
       return targetUser;
-    },
+    }, 
   };
 };

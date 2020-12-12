@@ -57,7 +57,7 @@ const Login = (props) => {
 
   return (
     <Layout className="layout flex flex-col h-screen">
-      <Navbar />
+      <Navbar setRole={props.setRole} />
       <div className="flex-grow px-12 bg-white pt-10">
         <Row align="center">
           <Col span={18}>

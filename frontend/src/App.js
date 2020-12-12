@@ -6,7 +6,6 @@ import LocalStorageService from './services/localStorageService'
 function App() {
 
   const [role, setRole] = useState(LocalStorageService.getRole());
-  console.log(role)
 
   return (
     <div className="App">
