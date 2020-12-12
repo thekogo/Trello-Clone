@@ -28,7 +28,24 @@ const Navbar = (props) => {
     <Header className="bg-gray-200">
       <Row align="middle">
         <Col span={8}>
-          <Title level={5}>Home</Title>
+          <Row>
+            <Col>
+              <Title level={5}>
+                <Link to="/">
+                  Home
+                </Link>
+              </Title>
+            </Col>
+            {!(user.role === "guest" || user.role === undefined) &&
+              <Col offset={1}>
+                <Title level={5}>
+                  <Link to="/board">
+                    Board
+                  </Link>
+                </Title>
+              </Col>
+            }
+          </Row>
         </Col>
         <Col span={8}>
           <Title level={2} className="text-center">Trello</Title>
