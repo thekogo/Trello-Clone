@@ -13,6 +13,7 @@ const Board = (props) => {
   const [boardName, setBoardName] = React.useState("");
 
   const showModal = () => {
+    setBoardName("")
     setVisible(true);
   };
 
@@ -31,6 +32,7 @@ const Board = (props) => {
       })
     })
     .finally(() => {
+      setBoardName("")
       setVisible(false);
       setConfirmLoading(false);
     })
@@ -38,6 +40,7 @@ const Board = (props) => {
 
   const handleCancel = () => {
     setVisible(false);
+    setBoardName("")
   };
 
   return (
@@ -47,7 +50,7 @@ const Board = (props) => {
         <Row align="center">
           <Col span={18}>
             <div className="border border-gray-200 rounded-md shadow-md p-5">
-              <Row justify="space-between">
+              <Row justify="space-between" align="top">
                 <Col>
                   <Title>My Board</Title>
                 </Col>

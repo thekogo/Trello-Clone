@@ -5,6 +5,7 @@ const cors = require('cors');
 const db = require('./models');
 
 const UserRouter = require('./routers/users');
+const BoardRouter = require('./routers/boards');
 
 const port = process.env.PORT
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/users', UserRouter);
+app.use('/boards', BoardRouter);
 
 
 app.get('/', (req, res) => res.send("OK"))
