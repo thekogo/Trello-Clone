@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Layout, Button, Row, Col, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import localStorageService from '../../services/localStorageService';
+import jwtDecode from 'jwt-decode';
 
 const { Header } = Layout;
 const { Title } = Typography;
 
 const Navbar = (props) => {
 
+  const [user, setUser] = useState({});
+
   const logout = () => {
     localStorageService.removeToken();
     props.setRole("guest");
   }
+
+  useEffect(() => {
+    const token = localStorageService.getToken();
+    if (token) {
+        const user = localStorageService.getUser();
+        setUser(user);
+    }
+  }, [])
 
   return (
     <Header className="bg-gray-200">
@@ -24,7 +35,7 @@ const Navbar = (props) => {
         </Col>
         <Col span={8}>
           <Row justify="end">
-            {props.role === "guest" ?
+            {user.role === "guest" || user.role === undefined ?
               <>
                 <Col>
                   <Link to="/register">
@@ -40,9 +51,7 @@ const Navbar = (props) => {
               :
               <>
                 <Col>
-                  <Link to="/register">
-                    <Button size="large" type="primary">Register</Button>
-                  </Link>
+                  <span>{user.firstName} {user.lastName}</span>
                 </Col>
                 <Col offset={1}>
                   <Button size="large" type="default" onClick={logout}>Logout</Button>
