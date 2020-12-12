@@ -8,7 +8,7 @@ const UserRouter = require('./routers/users');
 
 const port = process.env.PORT
 
-require('./config/passport')();
+require('./config/passport');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

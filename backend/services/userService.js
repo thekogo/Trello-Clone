@@ -1,7 +1,7 @@
 module.exports = function (db) {
   return {
     async userCreate(firstName, lastName, email, password, age) {
-      if (!(firstName && lastName && email && password, age)) {
+      if (!(firstName && lastName && email && password)) {
         return false;
       }
       const user = await db.Member.create({

@@ -17,7 +17,7 @@ const register = async (req, res) => {
   const salt = bcryptjs.genSaltSync(12);
   const hashedPass = bcryptjs.hashSync(password, salt);
 
-  await userService.userCreate(firstName, lastName, email, hashedPass, age);
+  await userService.userCreate(firstName, lastName, email, hashedPass);
 
   return res.status(201).send({ message: 'User created' });
 };
@@ -40,7 +40,7 @@ const login = async (req, res) => {
     lastName: targetUser.lastName,
     email: targetUser.email,
   };
-  const token = jwt.sign(payload, process.env.SECRET_KEY);
+  const token = jwt.sign(payload, process.env.SECRET_OR_KEY);
   return res.status(200).send({
     token,
     message: 'Login Successful',
