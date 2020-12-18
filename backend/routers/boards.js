@@ -7,5 +7,7 @@ const auth = passport.authenticate("jwt", { session: false });
 
 router.get('/', auth, boardController.getBoard);
 router.post('/', auth, boardController.createBoard);
+router.post('/:boardId', auth, boardController.createCategory);
+router.post('/:boardId/:categoryId', auth, boardController.createTask);
 
 module.exports = router;
