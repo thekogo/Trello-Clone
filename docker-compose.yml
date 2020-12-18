@@ -1,7 +1,8 @@
 version: '3.9'
 
 services:
-  db:
+  database:
+    container_name: database
     image: mysql
     restart: always
     environment:
@@ -12,9 +13,21 @@ services:
       - '3306:3306'
 
   phpmyadmin:
+    container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
     restart: always
     environment:
       PMA_HOST: db
     ports:
       - '8080:80'
+
+  backend:
+    container_name: backend
+    ports:
+      - '5000:5000'
+      - '443:443'
+    build: ./backend
+    depends_on:
+      - database
+    volumes:
+      - ./backend:/usr/src/app/
