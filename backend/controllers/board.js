@@ -31,7 +31,7 @@ const createTask = async (req, res) => {
     const categoryId = req.params.categoryId;
     const newCardId = await db.Card.count({where: { category_id: categoryId } });
     const newCard = await db.Card.create({
-        taskName: req.body.taskName,
+        name: req.body.taskName,
         description: req.body.description,
         order: newCardId,
         category_id: categoryId,

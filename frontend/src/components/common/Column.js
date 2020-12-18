@@ -2,6 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Task from './Task';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Button, Input, notification } from 'antd';
+import axios from '../../config/axios';
+import { useParams } from 'react-router-dom';
 
 const Container = styled.div`
   margin: 8px;
@@ -26,6 +29,35 @@ const TaskList = styled.div`
   `;
 
 const Column = (props) => {
+
+  const [showCreateTask, setShowCreateTask] = React.useState(false);
+  const [taskName, setTaskName] = React.useState("");
+  const { boardId } = useParams();
+
+  const createTask = () => {
+
+    if (taskName === "") {
+      notification.error({
+        message: 'กรุณากรอกชื่องาน'
+      })
+      return ;
+    }
+    axios.post(`/boards/${boardId}/${props.index}`, {
+      taskName: taskName
+    }).then(result => {
+      notification.success({
+        message: `เพิ่ม ${taskName} เสร็จสิ้น`
+      })
+    }).catch(err => {
+      notification.error({
+        message: `เพิ่ม ${taskName} ล้มเหลว`
+      })
+    })
+
+    setShowCreateTask(false);
+    setTaskName("");
+  }
+
   return (
     <Draggable draggableId={props.column.id} index={props.index} >
       {(provided) => (
@@ -49,6 +81,15 @@ const Column = (props) => {
                   <Task key={task.id} task={task} index={index} />
                 )}
                 {provided.placeholder}
+                {!showCreateTask ? 
+                <Button className="w-full" type="primary" onClick={() => setShowCreateTask(true)}>Create Task</Button>
+                :
+                <div className="flex flex-col gap-1 bg-gray-200 p-5">
+                  <Input value={taskName} onChange={(e) => setTaskName(e.target.value)} />
+                  <Button type="primary" onClick={createTask}>Create Task</Button>
+                  <Button onClick={() => {setShowCreateTask(false); setTaskName("");} }>Cancel</Button>
+                </div>
+                }
               </TaskList>
             )}
           </Droppable>

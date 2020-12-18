@@ -3,9 +3,6 @@ module.exports = (sequelize, DataTypes) => {
       name: {
           type: DataTypes.STRING(200),
       },
-      description: {
-          type: DataTypes.STRING(200),
-      },
       order: {
           type: DataTypes.INTEGER,
       },

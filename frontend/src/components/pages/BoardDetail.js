@@ -20,10 +20,20 @@ const Container = styled.div`
 
 const BoardDetail = (props) => {
 
-  const [data, setData] = React.useState(initData);
+  const [data, setData] = React.useState({});
   const [isCreateCategory, setIsCreateCategory] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState("");
   const { boardId } = useParams();
+
+  const getData = () => {
+    axios.get(`/boards/${boardId}`).then(result => {
+      setData(result)
+    })
+  }
+
+  React.useEffect(() => {
+    getData();
+  }, [])
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId, type } = result;
@@ -110,7 +120,7 @@ const BoardDetail = (props) => {
       return ;
     }
 
-    axios.post(`/board/${boardId}`, {
+    axios.post(`/boards/${boardId}`, {
       boardId: boardId,
       categoryName: categoryName
     }).then(result => {
@@ -156,7 +166,7 @@ const BoardDetail = (props) => {
                       ref={provided.innerRef}
                       className="relative w-full overflow-x-scroll"
                     >
-                    {data.columnOrder.map((columnId, index) => {
+                    {!data && data.columnOrder.map((columnId, index) => {
                       const column = data.columns[columnId];
                       const tasks = column.taskIds.map(taskId => data.tasks[taskId]);
 
