@@ -4,9 +4,8 @@ import Navbar from '../common/Navbar';
 import axios from '../../config/axios';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-import initData from '../common/data';
 import Column from '../common/Column';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 
 const { Title } = Typography;
 const { Footer } = Layout;
@@ -24,10 +23,12 @@ const BoardDetail = (props) => {
   const [isCreateCategory, setIsCreateCategory] = React.useState(false);
   const [categoryName, setCategoryName] = React.useState("");
   const { boardId } = useParams();
+  const history = useHistory()
 
   const getData = () => {
     axios.get(`/boards/${boardId}`).then(result => {
-      setData(result)
+      console.log(result.data)
+      setData(result.data)
     })
   }
 
@@ -35,7 +36,7 @@ const BoardDetail = (props) => {
     getData();
   }, [])
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId, type } = result;
 
     if( !destination ) return ;
@@ -56,59 +57,79 @@ const BoardDetail = (props) => {
         ...data,
         columnOrder: newColumnOrder
       }
+      await axios.patch(`/columns/updateCol`, {
+        ColumnIds: newColumnOrder
+      }).then(async (result) => {
+        console.log("OK then")
+        history.go(0);
+      })
+      .catch(err => {
+        console.log("Error")
+      }) 
+      .finally(() => {
+        console.log("OK")
+      })
+      console.log("EMD")
 
-      setData(newData)
+      // setData(newData)
       return;
     }
 
-    const start = data.columns[source.droppableId];
-    const finish = data.columns[destination.droppableId];
+    // same comlumn
+
+    const start = data.columns[source.droppableId.substring(6)];
+    const finish = data.columns[destination.droppableId.substring(6)];
 
     if(start === finish) {
       const newTaskIds = Array.from(start.taskIds);
       newTaskIds.splice(source.index, 1);
       newTaskIds.splice(destination.index, 0, draggableId);
-  
-      const newColumn = {
-        ...start,
+
+      // console.log(newColumn)
+      // setData(newData);
+      console.log("OK1")
+      await axios.patch(`/tasks/same`, {
         taskIds: newTaskIds
+      }).then(async (result) => {
+        console.log("OK then")
+        history.go(0);
+      })
+      .catch(err => {
+        console.log("Error")
+      }) 
+      .finally(() => {
+        console.log("OK")
+      })
+      console.log("EMD")
+    } else {
+      // between column
+      const startTaskIds = Array.from(start.taskIds);
+      startTaskIds.splice(source.index, 1);
+      const newStart = {
+        ...start,
+        taskIds: startTaskIds
       }
-  
+      // console.log('newStart', startTaskIds)
+
+      const finishTaskIds = Array.from(finish.taskIds);
+      finishTaskIds.splice(destination.index, 0, draggableId);
+      const newFinish = {
+        ...finish,
+        taskIds: finishTaskIds
+      }
+      console.log('finish', finish)
       const newData = {
         ...data,
         columns: {
           ...data.columns,
-          [newColumn.id]: newColumn,
+          [newStart.id]: newStart,
+          [newFinish.id]: newFinish
         }
       }
-      // console.log(newData)
+
       setData(newData);
-      return;
-    } 
-
-    const startTaskIds = Array.from(start.taskIds);
-    startTaskIds.splice(source.index, 1);
-    const newStart = {
-      ...start,
-      taskIds: startTaskIds
     }
 
-    const finishTaskIds = Array.from(finish.taskIds);
-    finishTaskIds.splice(destination.index, 0, draggableId);
-    const newFinish = {
-      ...finish,
-      taskIds: finishTaskIds
-    }
-    const newData = {
-      ...data,
-      columns: {
-        ...data.columns,
-        [newStart.id]: newStart,
-        [newFinish.id]: newFinish
-      }
-    }
-
-    setData(newData);
   }
 
   const createCategory = () => {
@@ -127,6 +148,7 @@ const BoardDetail = (props) => {
       notification.success({
         message: `สร้าง ${categoryName} เสร็จสิ้น`
       })
+      getData();
     }).catch(err => {
       notification.error({
         message: `ไม่สามารถสร้าง ${categoryName}`
@@ -166,11 +188,12 @@ const BoardDetail = (props) => {
                       ref={provided.innerRef}
                       className="relative w-full overflow-x-scroll"
                     >
-                    {!data && data.columnOrder.map((columnId, index) => {
+                    {Object.entries(data).length !== 0 && data.columnOrder.map((columnId, index) => {
                       const column = data.columns[columnId];
                       const tasks = column.taskIds.map(taskId => data.tasks[taskId]);
+                      // console.log(tasks)
 
-                      return <Column key={column.id} column={column} tasks={tasks} index={index} />
+                      return <Column key={columnId} column={column} tasks={tasks} index={data.columns[columnId].order} getData={getData} />
                     })}
                     {provided.placeholder}
                     {!isCreateCategory ?

@@ -6,6 +6,8 @@ const db = require('./models');
 
 const UserRouter = require('./routers/users');
 const BoardRouter = require('./routers/boards');
+const TaskRouter = require('./routers/tasks');
+const ColumnRouter = require('./routers/columns');
 
 const port = process.env.PORT
 
@@ -16,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use('/users', UserRouter);
 app.use('/boards', BoardRouter);
+app.use('/tasks', TaskRouter);
+app.use('/columns', ColumnRouter);
 
 
 app.get('/', (req, res) => res.send("OK"))
